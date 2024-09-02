@@ -1,0 +1,620 @@
+print("Executed")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/vFishyTurtle/SN-Lib/main/src'))()
+local lib = Library:CreateWindow({Title = "CustomMagnets"})
+
+local t1 = lib:NewTab({Name = "Main"})
+local s1 = t1:NewSection({Name = "Magnets"})
+
+s1:NewToggle({
+	Name = "Magnets",
+	default = false,
+	callback = function(v)
+		--Mags by bxskcodes--
+ 
+local Workspace = game:GetService("Workspace")
+ 
+Workspace.ChildAdded:Connect(function(Child)
+    if Child:IsA("BasePart") and Child.Name == "Football" then
+        Child.Size = Vector3.new(36, 36, 36) -- Set the size to 25x25x25
+        Child.CanCollide = false -- Optional: Disables collision for the football
+        Child.Massless = true -- Keeps the ball light after resizing
+    end
+end)
+ 
+print("Football size set to 25x25x25")
+	end,
+})
+
+t1:NewSlider({
+	Name = "Custom Magnets Range",
+	default = 50,
+	min = 0,
+	max = 150,
+	callback = function(v)
+		print(v)
+	end,
+})
+
+s1:NewDropdown({
+	Name = "MagnetTypes",
+	options = {"Custom", "Blatant", "Legit"},
+	default = "Custom",
+	callback = function(v)
+		print(v)
+	end,
+})
+
+s1:NewToggle({
+	Name = "QuickTP",
+	default = false,
+	callback = function(v)
+		local player = game.Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
+
+-- Function to teleport the player
+local function teleportForward()
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local humanoidRootPart = player.Character.HumanoidRootPart
+        local forwardDirection = humanoidRootPart.CFrame.LookVector -- The direction the player is facing
+        local newPosition = humanoidRootPart.Position + forwardDirection * 5 -- 5 studs forward
+        humanoidRootPart.CFrame = CFrame.new(newPosition)
+    end
+end
+
+-- Detect when the 'F' key is pressed
+UIS.InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.F then
+        teleportForward()
+    end
+end)
+
+	end,
+})
+
+s1:NewToggle({
+	Name = "BallPredictions",
+	default = false,
+	callback = function(v)
+		local player = game.Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+
+-- Function to predict where the ball will land
+local function predictLandingPosition(ball)
+    local gravity = Workspace.Gravity
+    local velocity = ball.Velocity
+    local position = ball.Position
+    
+    -- Using basic physics to estimate the time to hit the ground
+    local timeToLand = (velocity.Y + math.sqrt(velocity.Y^2 + 2 * gravity * position.Y)) / gravity
+    
+    -- Calculate the landing position based on the velocity and time
+    local landingPosition = position + Vector3.new(velocity.X, 0, velocity.Z) * timeToLand
+    
+    return landingPosition
+end
+
+-- Event listener for when the ball is thrown
+Workspace.ChildAdded:Connect(function(child)
+    if child:IsA("BasePart") and child.Name == "Football" then
+        child:GetPropertyChangedSignal("Position"):Connect(function()
+            local predictedPosition = predictLandingPosition(child)
+            print("Predicted Landing Position:", predictedPosition)
+            
+            -- Optional: You can create a visual indicator at the predicted position
+            -- Example: Create a marker part at the predicted landing spot
+            local marker = Instance.new("Part")
+            marker.Size = Vector3.new(1, 1, 1)
+            marker.Position = predictedPosition
+            marker.Anchored = true
+            marker.BrickColor = BrickColor.new("Bright red")
+            marker.Parent = Workspace
+            
+            -- Optional: Destroy the marker after a few seconds
+            game.Debris:AddItem(marker, 2)
+        end)
+    end
+end)
+
+	end,
+})
+
+s1:NewToggle({
+	Name = "LongArms",
+	default = false,
+	callback = function(v)
+		-- Settings
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local armLength = 5 -- Adjust this value to make the arms longer or shorter
+
+-- Function to resize the arms
+local function resizeArms()
+    local leftArm = character:FindFirstChild("Left Arm") or character:FindFirstChild("LeftUpperArm")
+    local rightArm = character:FindFirstChild("Right Arm") or character:FindFirstChild("RightUpperArm")
+
+    if leftArm and rightArm then
+        -- Resize the left arm
+        leftArm.Size = Vector3.new(leftArm.Size.X, armLength, leftArm.Size.Z)
+        leftArm.Massless = true
+        leftArm.CanCollide = false
+
+        -- Resize the right arm
+        rightArm.Size = Vector3.new(rightArm.Size.X, armLength, rightArm.Size.Z)
+        rightArm.Massless = true
+        rightArm.CanCollide = false
+
+        -- Adjust the position of the arms to make them longer
+        local leftWeld = character:FindFirstChild("Left Shoulder") or character:FindFirstChild("LeftShoulder")
+        local rightWeld = character:FindFirstChild("Right Shoulder") or character:FindFirstChild("RightShoulder")
+
+        if leftWeld then
+            leftWeld.C0 = leftWeld.C0 * CFrame.new(0, (armLength - 2) / 2, 0)
+        end
+
+        if rightWeld then
+            rightWeld.C0 = rightWeld.C0 * CFrame.new(0, (armLength - 2) / 2, 0)
+        end
+    end
+end
+
+-- Call the function to resize arms when the character spawns
+character:WaitForChild("HumanoidRootPart")
+resizeArms()
+
+-- Reapply the long arms whenever the character respawns
+player.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    character:WaitForChild("HumanoidRootPart")
+    resizeArms()
+end)
+
+	end,
+})
+
+local t1 = lib:NewTab({Name = "Physics"})
+local s1 = t1:NewSection({Name = "Physics"})
+
+s1:NewToggle({
+	Name = "PullVector - Z To Activate",
+	default = false,
+	callback = function(v)
+		-- Settings
+local player = game.Players.LocalPlayer
+local pullSpeed = 35 -- Adjust the pull speed to your liking
+local isPulling = false
+local pullConnection = nil -- To store the connection to Heartbeat
+
+-- Function to find the nearest ball
+local function findNearestBall()
+    local nearestBall = nil
+    local shortestDistance = math.huge
+
+    for _, obj in pairs(workspace:GetChildren()) do
+        if obj:IsA("BasePart") and obj.Name == "Football" then -- Check for objects named "Football"
+            local distance = (obj.Position - player.Character.HumanoidRootPart.Position).magnitude
+            if distance < shortestDistance then
+                shortestDistance = distance
+                nearestBall = obj
+            end
+        end
+    end
+
+    return nearestBall
+end
+
+-- Function to pull the player towards the nearest ball
+local function pullTowardsBall()
+    if player.Character then
+        local ball = findNearestBall()
+        if ball then
+            local direction = (ball.Position - player.Character.HumanoidRootPart.Position).unit
+            player.Character.HumanoidRootPart.Velocity = direction * pullSpeed
+        end
+    end
+end
+
+-- Toggling the pull effect on and off
+local function togglePull()
+    if isPulling then
+        if pullConnection then
+            pullConnection:Disconnect() -- Disconnect the Heartbeat connection
+            pullConnection = nil
+        end
+    else
+        pullConnection = game:GetService("RunService").Heartbeat:Connect(pullTowardsBall)
+    end
+    isPulling = not isPulling
+end
+
+-- Reapply the pull effect after the player respawns
+local function onCharacterAdded(character)
+    character:WaitForChild("HumanoidRootPart")
+    if isPulling then
+        pullConnection = game:GetService("RunService").Heartbeat:Connect(pullTowardsBall)
+    end
+end
+
+-- Keybind to toggle pulling
+local UIS = game:GetService("UserInputService")
+UIS.InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.Z then -- Press 'P' to toggle the pull
+        togglePull()
+    end
+end)
+
+-- Connect character added event to reapply pull effect after respawn
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Initial setup if the character already exists
+if player.Character then
+    onCharacterAdded(player.Character)
+end
+
+	end,
+})
+
